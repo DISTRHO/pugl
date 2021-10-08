@@ -63,6 +63,9 @@ puglX11GlConfigure(PuglView* view)
 
   // clang-format off
   const int attrs[] = {
+#ifdef DGL_USE_RGBA
+    GLX_RGBA,          True,
+#endif
     GLX_X_RENDERABLE,  True,
     GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
     GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
