@@ -1039,12 +1039,6 @@ puglRealize(PuglView* view)
     [window setContentView:impl->wrapperView];
     [window makeFirstResponder:impl->wrapperView];
     [window setIsVisible:NO];
-
-    if (! view->transientParent)
-    {
-      [window makeKeyAndOrderFront:window];
-      [view->world->impl->app activateIgnoringOtherApps:YES];
-    }
   }
 
   [impl->wrapperView updateTrackingAreas];
@@ -1068,6 +1062,11 @@ puglShow(PuglView* view)
     [view->impl->window setIsVisible:YES];
     [view->impl->drawView setNeedsDisplay:YES];
     updateViewRect(view);
+  }
+
+  if (! view->transientParent) {
+    [view->impl->window makeKeyAndOrderFront:view->impl->window];
+    [view->world->impl->app activateIgnoringOtherApps:YES];
   }
 
   return PUGL_SUCCESS;
