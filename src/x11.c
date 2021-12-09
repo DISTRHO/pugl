@@ -1401,8 +1401,8 @@ puglGetClipboard(PuglView* const    view,
                       impl->win,
                       CurrentTime);
 
-    // Run event loop until data is received
-    while (!view->clipboard.data) {
+    // Run event loop until data is received, within limits
+    for (int i=500; !view->clipboard.data && --i >= 0;) {
       puglUpdate(view->world, -1.0);
     }
   }
