@@ -83,7 +83,7 @@ enum WmClientStateMessageAction {
 };
 
 #ifdef HAVE_XCURSOR
-static const char* cursor_names[] = {
+static const char* cursor_names_x11[] = {
   "left_ptr",          // ARROW
   "xterm",             // CARET
   "crosshair",         // CROSSHAIR
@@ -91,8 +91,20 @@ static const char* cursor_names[] = {
   "forbidden",         // NO
   "sb_h_double_arrow", // LEFT_RIGHT
   "sb_v_double_arrow", // UP_DOWN
-  "size_fdiag",        // PUGL_CURSOR_DIAGONAL
-  "size_bdiag",        // PUGL_CURSOR_ANTI_DIAGONAL
+  "size_fdiag",        // DIAGONAL
+  "size_bdiag",        // ANTI_DIAGONAL
+};
+
+static const char* cursor_names_xdg[] = {
+  "default",     // ARROW
+  "text",        // CARET
+  "crosshair",   // CROSSHAIR
+  "pointer",     // HAND
+  "not-allowed", // NO
+  "ew-resize",   // LEFT_RIGHT
+  "ns-resize",   // UP_DOWN
+  "nwse-resize", // DIAGONAL
+  "nesw-resize", // ANTI_DIAGONAL
 };
 #endif
 
@@ -181,7 +193,7 @@ puglInitViewInternals(void)
   PuglInternals* impl = (PuglInternals*)calloc(1, sizeof(PuglInternals));
 
 #ifdef HAVE_XCURSOR
-  impl->cursorName = cursor_names[0];
+  impl->cursorName = cursor_names_x11[0];
 #endif
 
   return impl;
@@ -1443,17 +1455,17 @@ puglSetCursor(PuglView* const view, const PuglCursor cursor)
 #ifdef HAVE_XCURSOR
   PuglInternals* const impl  = view->impl;
   const unsigned       index = (unsigned)cursor;
-  const unsigned       count = sizeof(cursor_names) / sizeof(cursor_names[0]);
+  const unsigned       count = sizeof(cursor_names_x11) / sizeof(cursor_names_x11[0]);
   if (index >= count) {
     return PUGL_BAD_PARAMETER;
   }
 
-  const char* name = cursor_names[index];
+  const char* name = cursor_names_x11[index];
   if (!impl->win || impl->cursorName == name) {
     return PUGL_SUCCESS;
   }
 
-  impl->cursorName = cursor_names[index];
+  impl->cursorName = cursor_names_x11[index];
 
   return defineCursorName(view, impl->cursorName);
 #else
