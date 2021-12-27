@@ -347,8 +347,8 @@ typedef struct {
    Key press or release event.
 
    This event represents low-level key presses and releases.  This can be used
-   for "direct" keyboard handing like key bindings, but must not be interpreted
-   as text input.
+   for "direct" keyboard handling like key bindings, but must not be
+   interpreted as text input.
 
    Keys are represented portably as Unicode code points, using the "natural"
    code point for the key where possible (see #PuglKey for details).  The `key`
@@ -972,7 +972,7 @@ puglSetMaxSize(PuglView* view, int width, int height);
    fixed aspect ratio, set the minimum and maximum values to the same ratio.
 
    Note that setting different minimum and maximum constraints does not
-   currenty work on MacOS (the minimum is used), so only setting a fixed aspect
+   currently work on MacOS (the minimum is used), so only setting a fixed aspect
    ratio works properly across all platforms.
 
    If an initial aspect ratio is known, this should be called before
@@ -1429,7 +1429,7 @@ puglInitWindowMinSize(PuglView* view, int width, int height)
    fixed aspect ratio, set the minimum and maximum values to the same ratio.
 
    Note that setting different minimum and maximum constraints does not
-   currenty work on MacOS (the minimum is used), so only setting a fixed aspect
+   currently work on MacOS (the minimum is used), so only setting a fixed aspect
    ratio works properly across all platforms.
 */
 static inline PUGL_DEPRECATED_BY("puglSetAspectRatio")
