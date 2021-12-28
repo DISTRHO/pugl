@@ -95,6 +95,7 @@ static const char* cursor_names_x11[] = {
   "size_bdiag",        // ANTI_DIAGONAL
 };
 
+/*
 static const char* cursor_names_xdg[] = {
   "default",     // ARROW
   "text",        // CARET
@@ -106,6 +107,7 @@ static const char* cursor_names_xdg[] = {
   "nwse-resize", // DIAGONAL
   "nesw-resize", // ANTI_DIAGONAL
 };
+*/
 #endif
 
 static bool
