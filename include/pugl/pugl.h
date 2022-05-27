@@ -43,13 +43,8 @@
   PUGL_API             \
   PUGL_CONST_FUNC
 
-#ifdef __cplusplus
-#  define PUGL_BEGIN_DECLS extern "C" {
-#  define PUGL_END_DECLS }
-#else
-#  define PUGL_BEGIN_DECLS
-#  define PUGL_END_DECLS
-#endif
+#define PUGL_BEGIN_DECLS
+#define PUGL_END_DECLS
 
 PUGL_BEGIN_DECLS
 
