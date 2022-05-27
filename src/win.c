@@ -116,7 +116,7 @@ puglWinGetWindowExFlags(const PuglView* const view)
 }
 
 static double
-puglWinGetViewScaleFactor(const PuglView* const view)
+puglWinGetViewScaleFactor(HWND hwnd)
 {
   const HMODULE shcore = LoadLibrary("Shcore.dll");
   if (!shcore) {
@@ -136,7 +136,7 @@ puglWinGetViewScaleFactor(const PuglView* const view)
   if (GetProcessDpiAwareness && GetScaleFactorForMonitor &&
       !GetProcessDpiAwareness(NULL, &dpiAware) && dpiAware) {
     GetScaleFactorForMonitor(
-      MonitorFromWindow(view->impl->hwnd, MONITOR_DEFAULTTOPRIMARY),
+      MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY),
       &scaleFactor);
   }
 
@@ -246,7 +246,7 @@ puglRealize(PuglView* view)
     puglSetWindowTitle(view, view->title);
   }
 
-  view->impl->scaleFactor = puglWinGetViewScaleFactor(view);
+  view->impl->scaleFactor = puglWinGetViewScaleFactor(view->impl->hwnd);
   view->impl->cursor      = LoadCursor(NULL, IDC_ARROW);
 
   puglSetFrame(view, view->frame);
@@ -638,7 +638,7 @@ handleMessage(PuglView* view, UINT message, WPARAM wParam, LPARAM lParam)
     }
     break;
   case WM_DISPLAYCHANGE:
-    view->impl->scaleFactor = puglWinGetViewScaleFactor(view);
+    view->impl->scaleFactor = puglWinGetViewScaleFactor(view->impl->hwnd);
     break;
   case WM_WINDOWPOSCHANGED:
     handleConfigure(view, &event);
@@ -1041,7 +1041,14 @@ adjustedWindowRect(PuglView* const view,
 double
 puglGetScaleFactor(const PuglView* const view)
 {
-  return view->impl->scaleFactor;
+  if (view->impl->scaleFactor) {
+    return view->impl->scaleFactor;
+  }
+  return puglWinGetViewScaleFactor(view->parent
+    ? (HWND)view->parent
+    : view->transientParent
+    ? (HWND)view->transientParent
+    : NULL);
 }
 
 PuglStatus
