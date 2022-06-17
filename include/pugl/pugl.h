@@ -1262,7 +1262,7 @@ typedef enum {
 } PuglCursor;
 
 /// The number of #PuglCursor values
-#define PUGL_NUM_CURSORS ((unsigned)PUGL_CURSOR_UP_DOWN + 1u)
+#define PUGL_NUM_CURSORS ((unsigned)PUGL_CURSOR_ANTI_DIAGONAL + 1u)
 
 /**
    Grab the keyboard input focus.
