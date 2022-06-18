@@ -1066,8 +1066,10 @@ puglRealize(PuglView* view)
     view->frame.width  = defaultSize.width;
     view->frame.height = defaultSize.height;
 
-    view->frame.x = (PuglCoord)((screenWidthPx - view->frame.width) / 2.0);
-    view->frame.y = (PuglCoord)((screenHeightPx - view->frame.height) / 2.0);
+    if (view->impl->window) {
+      view->frame.x = (PuglCoord)((screenWidthPx - view->frame.width) / 2.0);
+      view->frame.y = (PuglCoord)((screenHeightPx - view->frame.height) / 2.0);
+    }
   }
 
   const NSRect framePx = rectToNsRect(view->frame);
