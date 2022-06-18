@@ -1380,8 +1380,10 @@ puglWinCreateWindow(PuglView* const   view,
     view->frame.width  = defaultSize.width;
     view->frame.height = defaultSize.height;
 
-    view->frame.x = (PuglCoord)((screenWidth - view->frame.width) / 2);
-    view->frame.y = (PuglCoord)((screenHeight - view->frame.height) / 2);
+    if (!view->parent) {
+      view->frame.x = (PuglCoord)((screenWidth - view->frame.width) / 2);
+      view->frame.y = (PuglCoord)((screenHeight - view->frame.height) / 2);
+    }
   }
 
   // The meaning of "parent" depends on the window type (WS_CHILD)
