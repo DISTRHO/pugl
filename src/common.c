@@ -49,7 +49,11 @@ puglNewWorld(PuglWorldType type, PuglWorldFlags flags)
 
   world->startTime = puglGetTime(world);
 
+#ifdef __EMSCRIPTEN__
+  puglSetString(&world->className, "canvas");
+#else
   puglSetString(&world->className, "Pugl");
+#endif
 
   return world;
 }
