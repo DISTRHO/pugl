@@ -252,7 +252,15 @@ puglMouseCallback(const int eventType, const EmscriptenMouseEvent* const mouseEv
                                             mouseEvent->altKey,
                                             mouseEvent->metaKey);
 
-  const double scaleFactor = view->world->impl->scaleFactor;
+  double scaleFactor = view->world->impl->scaleFactor;
+#ifdef __MOD_DEVICES__
+  scaleFactor /= EM_ASM_DOUBLE({
+    return parseFloat(
+      RegExp('^scale\\\((.*)\\\)$')
+      .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
+    );
+  });
+#endif
 
   // workaround missing pointer lock callback, see https://github.com/emscripten-core/emscripten/issues/9681
   EmscriptenPointerlockChangeEvent e;
@@ -370,7 +378,15 @@ puglTouchCallback(const int eventType, const EmscriptenTouchEvent* const touchEv
                                             touchEvent->altKey,
                                             touchEvent->metaKey);
 
-  const double scaleFactor = view->world->impl->scaleFactor;
+  double scaleFactor = view->world->impl->scaleFactor;
+#ifdef __MOD_DEVICES__
+  scaleFactor /= EM_ASM_DOUBLE({
+    return parseFloat(
+      RegExp('^scale\\\((.*)\\\)$')
+      .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
+    );
+  });
+#endif
 
   d_debug("touch %d|%s %d || %ld",
           eventType,
@@ -477,7 +493,15 @@ puglWheelCallback(const int eventType, const EmscriptenWheelEvent* const wheelEv
     return EM_FALSE;
   }
 
-  const double scaleFactor = view->world->impl->scaleFactor;
+  double scaleFactor = view->world->impl->scaleFactor;
+#ifdef __MOD_DEVICES__
+  scaleFactor /= EM_ASM_DOUBLE({
+    return parseFloat(
+      RegExp('^scale\\\((.*)\\\)$')
+      .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
+    );
+  });
+#endif
 
   PuglEvent event = {{PUGL_SCROLL, 0}};
   event.scroll.time  = wheelEvent->mouse.timestamp / 1e3;
