@@ -295,12 +295,6 @@ puglMouseCallback(const int eventType, const EmscriptenMouseEvent* const mouseEv
       event.button.button = mouseEvent->button;
       break;
     }
-#if PUGL_WASM_AUTO_POINTER_LOCK
-    if (eventType == EMSCRIPTEN_EVENT_MOUSEDOWN)
-        emscripten_request_pointerlock(view->world->className, false);
-    else
-        emscripten_exit_pointerlock();
-#endif
     break;
   case EMSCRIPTEN_EVENT_MOUSEMOVE:
     event.motion.type = PUGL_MOTION;
@@ -344,6 +338,17 @@ puglMouseCallback(const int eventType, const EmscriptenMouseEvent* const mouseEv
     return EM_FALSE;
 
   puglDispatchEventWithContext(view, &event);
+
+#ifdef PUGL_WASM_AUTO_POINTER_LOCK
+  switch (eventType) {
+  case EMSCRIPTEN_EVENT_MOUSEDOWN:
+    emscripten_request_pointerlock(view->world->className, false);
+    break;
+  case EMSCRIPTEN_EVENT_MOUSEUP:
+    emscripten_exit_pointerlock();
+    break;
+  }
+#endif
 
   // note: we must always return false, otherwise canvas never gets keyboard input
   return EM_FALSE;
