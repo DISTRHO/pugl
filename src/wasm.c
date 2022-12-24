@@ -20,6 +20,10 @@
     }
 #endif
 
+#ifdef __MOD_DEVICES__
+#  define MOD_SCALE_FACTOR_MULT 1
+#endif
+
 PuglWorldInternals*
 puglInitWorldInternals(const PuglWorldType type, const PuglWorldFlags flags)
 {
@@ -27,6 +31,9 @@ puglInitWorldInternals(const PuglWorldType type, const PuglWorldFlags flags)
     (PuglWorldInternals*)calloc(1, sizeof(PuglWorldInternals));
 
   impl->scaleFactor = emscripten_get_device_pixel_ratio();
+#ifdef __MOD_DEVICES__
+  impl->scaleFactor *= MOD_SCALE_FACTOR_MULT;
+#endif
 
   printf("DONE: %s %d | -> %f\n", __func__, __LINE__, impl->scaleFactor);
 
@@ -259,7 +266,7 @@ puglMouseCallback(const int eventType, const EmscriptenMouseEvent* const mouseEv
       RegExp('^scale\\\((.*)\\\)$')
       .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
     );
-  });
+  }) * MOD_SCALE_FACTOR_MULT;
 #endif
 
   // workaround missing pointer lock callback, see https://github.com/emscripten-core/emscripten/issues/9681
@@ -385,7 +392,7 @@ puglTouchCallback(const int eventType, const EmscriptenTouchEvent* const touchEv
       RegExp('^scale\\\((.*)\\\)$')
       .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
     );
-  });
+  }) * MOD_SCALE_FACTOR_MULT;
 #endif
 
   d_debug("touch %d|%s %d || %ld",
@@ -466,6 +473,8 @@ puglFocusCallback(const int eventType, const EmscriptenFocusEvent* /*const focus
     return EM_FALSE;
   }
 
+  d_debug("focus %d|%s", eventType, eventType == EMSCRIPTEN_EVENT_FOCUSIN ? "focus-in" : "focus-out");
+
   PuglEvent event = {{eventType == EMSCRIPTEN_EVENT_FOCUSIN ? PUGL_FOCUS_IN : PUGL_FOCUS_OUT, 0}};
   event.focus.mode = PUGL_CROSSING_NORMAL;
 
@@ -500,7 +509,7 @@ puglWheelCallback(const int eventType, const EmscriptenWheelEvent* const wheelEv
       RegExp('^scale\\\((.*)\\\)$')
       .exec(document.getElementById("pedalboard-dashboard").style.transform)[1]
     );
-  });
+  }) * MOD_SCALE_FACTOR_MULT;
 #endif
 
   PuglEvent event = {{PUGL_SCROLL, 0}};
@@ -542,7 +551,11 @@ puglUiCallback(const int eventType, const EmscriptenUiEvent* const uiEvent, void
   if (!width || !height)
     return EM_FALSE;
 
-  const double scaleFactor = view->world->impl->scaleFactor = emscripten_get_device_pixel_ratio();
+  double scaleFactor = emscripten_get_device_pixel_ratio();
+#ifdef __MOD_DEVICES__
+  scaleFactor *= MOD_SCALE_FACTOR_MULT;
+#endif
+  view->world->impl->scaleFactor = scaleFactor;
 
   emscripten_set_canvas_element_size(view->world->className, width * scaleFactor, height * scaleFactor);
 
