@@ -21,21 +21,21 @@
 #include <unistd.h>
 
 #include <assert.h>
-#include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 
-#include <stdio.h>
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
 
 #ifndef BTN_LEFT
 #  define BTN_LEFT 0x110
 #endif
 
-struct wl_callback;
-
 static PuglView*
-findView(PuglWorld* const world, const struct wl_surface* const wlSurface)
+findView(PuglWorld* const world, struct wl_surface* const wlSurface)
 {
   for (size_t i = 0; i < world->numViews; ++i) {
     if (world->views[i]->impl->wlSurface == wlSurface) {
