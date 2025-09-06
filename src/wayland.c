@@ -7,6 +7,7 @@
 #include "internal.h"
 #include "platform.h"
 #include "types.h"
+#include "xdg-decoration.h"
 #include "xdg-shell.h"
 
 #include <pugl/pugl.h>
@@ -29,6 +30,16 @@
 #ifndef __cplusplus
 #include <stdbool.h>
 #endif
+
+// unstable protocols
+#define XDG_TOPLEVEL_DECORATION_MODE_SERVER_SIDE ZXDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE
+#define xdg_decoration_manager_destroy zxdg_decoration_manager_v1_destroy
+#define xdg_decoration_manager_interface zxdg_decoration_manager_v1_interface
+#define xdg_decoration_manager_get_toplevel_decoration zxdg_decoration_manager_v1_get_toplevel_decoration
+#define xdg_toplevel_decoration zxdg_toplevel_decoration_v1
+#define xdg_toplevel_decoration_destroy zxdg_toplevel_decoration_v1_destroy
+#define xdg_toplevel_decoration_interface zxdg_toplevel_decoration_v1_interface
+#define xdg_toplevel_decoration_set_mode zxdg_toplevel_decoration_v1_set_mode
 
 #ifndef BTN_LEFT
 #  define BTN_LEFT 0x110
@@ -574,6 +585,9 @@ registry_global(void* const               data,
     impl->wmBase = (struct xdg_wm_base*)wl_registry_bind(
       registry, name, &xdg_wm_base_interface, 1);
     xdg_wm_base_add_listener(impl->wmBase, &xdg_wm_base_listener, world);
+  } else if (strcmp(interface, xdg_decoration_manager_interface.name) == 0) {
+    impl->decorationManager = (struct xdg_decoration_manager*)wl_registry_bind(
+      registry, name, &xdg_decoration_manager_interface, 1);
   } else if (strcmp(interface, wl_seat_interface.name) == 0) {
     impl->seat =
       (struct wl_seat*)wl_registry_bind(registry, name, &wl_seat_interface, 5);
@@ -916,6 +930,15 @@ puglRealize(PuglView* const view)
   assert(impl->toplevel);
 
   xdg_toplevel_add_listener(impl->toplevel, &xdg_toplevel_listener, view);
+
+  if (world->impl->decorationManager) {
+    impl->toplevelDecoration = xdg_decoration_manager_get_toplevel_decoration(
+      world->impl->decorationManager, impl->toplevel);
+    assert(impl->toplevelDecoration);
+
+    xdg_toplevel_decoration_set_mode(impl->toplevelDecoration,
+                                     XDG_TOPLEVEL_DECORATION_MODE_SERVER_SIDE);
+  }
 
   char* const title = view->strings[PUGL_WINDOW_TITLE];
   if (title) {

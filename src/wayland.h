@@ -43,6 +43,7 @@ struct PuglWorldInternalsImpl {
   struct wl_pointer*      pointer;
   struct wl_cursor_theme* cursorTheme;
   struct wl_keyboard*     keyboard;
+  struct xdg_decoration_manager* decorationManager;
   struct xkb_state*       xkbState;
   struct xkb_context*     xkbContext;
   struct xkb_keymap*      xkbKeymap;
@@ -59,6 +60,7 @@ struct PuglInternalsImpl {
   struct wl_surface*      wlSurface;
   struct xdg_surface*     xdgSurface;
   struct xdg_toplevel*    toplevel;
+  struct zxdg_toplevel_decoration_v1* toplevelDecoration;
   struct wl_surface*      cursorSurface;
   struct wl_cursor_image* cursorImage;
   PuglSurface*            backendSurface;
