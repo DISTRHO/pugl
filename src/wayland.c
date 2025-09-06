@@ -673,7 +673,8 @@ puglGetTime(const PuglWorld* const world)
 PuglStatus
 puglUpdate(PuglWorld* const world, const double PUGL_UNUSED(timeout))
 {
-  wl_display_dispatch(world->impl->display);
+  wl_display_dispatch_pending(world->impl->display);
+  wl_display_roundtrip(world->impl->display);
   return PUGL_SUCCESS;
 }
 
@@ -825,6 +826,12 @@ onXdgSurfaceConfigure(void* const               data,
           initialSize.height);
 
   xdg_surface_ack_configure(xdgSurface, serial);
+
+  if (view->impl->backendResizeFn) {
+    view->impl->backendResizeFn(view->impl->backendSurface,
+                                initialSize.width,
+                                initialSize.height);
+  }
 
   PuglEvent event = {{PUGL_NOTHING, 0U}};
 

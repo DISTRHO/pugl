@@ -33,6 +33,8 @@
 /* struct xkb_keymap; */
 /* struct xkb_state; */
 
+typedef void (*PuglSurfaceResizeFn)(PuglSurface* surface, unsigned width, unsigned height);
+
 struct PuglWorldInternalsImpl {
   struct wl_display*      display;
   struct wl_registry*     registry;
@@ -64,6 +66,7 @@ struct PuglInternalsImpl {
   struct wl_surface*      cursorSurface;
   struct wl_cursor_image* cursorImage;
   PuglSurface*            backendSurface;
+  PuglSurfaceResizeFn     backendResizeFn;
   uint32_t                lastEnterSerial;
   wl_fixed_t              pointerX;
   wl_fixed_t              pointerY;

@@ -57,6 +57,15 @@ puglCurrentViewSize(const PuglView* const view)
   return size;
 }
 
+static void
+puglWaylandGlResize(PuglSurface* const surface,
+                    const unsigned     width,
+                    const unsigned     height)
+{
+  PuglWaylandGlSurface* const backendSurface = (PuglWaylandGlSurface*)surface;
+  wl_egl_window_resize(backendSurface->eglWindow, width, height, 0, 0);
+}
+
 static PuglStatus
 puglWaylandGlConfigure(PuglView* view)
 {
@@ -189,6 +198,7 @@ puglWaylandGlConfigure(PuglView* view)
   backendSurface->eglSurface = eglSurface;
   backendSurface->eglContext = eglContext;
   impl->backendSurface       = backendSurface;
+  impl->backendResizeFn      = puglWaylandGlResize;
 
   // Update possibly ambiguous hints to reflect reality
   view->hints[PUGL_RED_BITS] =
