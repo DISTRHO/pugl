@@ -943,6 +943,9 @@ puglRealize(PuglView* const view)
   wl_surface_damage_buffer(impl->wlSurface, 0, 0, INT32_MAX, INT32_MAX);
   wl_surface_commit(view->impl->wlSurface);
 
+  // roundtrip so we can receive configure event
+  wl_display_roundtrip(world->impl->display);
+
   return st;
 }
 
