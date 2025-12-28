@@ -230,8 +230,12 @@ puglWinGetViewScaleFactor(const PuglView* const view)
 }
 
 PuglWorldInternals*
-puglInitWorldInternals(PuglWorldType type, PuglWorldFlags PUGL_UNUSED(flags))
+puglInitWorldInternals(PuglWorld* const     world,
+                       const PuglWorldType  type,
+                       const PuglWorldFlags PUGL_UNUSED(flags))
 {
+  (void)world; // FIXME
+
   PuglWorldInternals* impl =
     (PuglWorldInternals*)calloc(1, sizeof(PuglWorldInternals));
   if (!impl) {
